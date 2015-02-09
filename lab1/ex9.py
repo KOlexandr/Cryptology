@@ -94,7 +94,11 @@ def main():
 
     a = [[6, 9], [25, 3]]
     print(encoded + " = " + AffineCipherTest.decode(encoded, alphabet, a))
-    print(decoded + " = " + AffineCipherTest.encode(decoded, alphabet, a))
+    print(decoded + " = " + AffineCipherTest.encode(
+        decoded,
+        alphabet,
+        AffineCipherTest.inverse_matrix_2d(a, len(alphabet))
+    ))
 
 if __name__ == '__main__':
     main()
