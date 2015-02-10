@@ -1,3 +1,5 @@
+from numpy.core.multiarray import zeros
+
 __author__ = 'Olexandr'
 
 
@@ -12,8 +14,7 @@ class MatrixCodeBypass:
 
         matrix = self.to_key_chars_matrix(word)
         mapping = list(map(lambda char: (self.alphabet.index(char), self.key.index(char)), self.key))
-        mapping.sort(key=lambda t: t[0])
-        fmap = list(map(lambda t: t[1], mapping))
+        fmap = list(map(lambda t: t[1], sorted(mapping, key=lambda t: t[0])))
 
         new_word = []
         for val in fmap:
@@ -26,7 +27,7 @@ class MatrixCodeBypass:
             return ""
         (i, j) = divmod(len(word), len(self.key))
         m_len = i + 1 if j != 0 else i
-        matrix = self.to_chars_matrix(word, m_len, False)
+        matrix = self.to_chars_matrix(word, m_len)
 
         mapping = list(map(lambda char: (self.alphabet.index(char), self.key.index(char)), self.key))
         mapping.sort(key=lambda t: t[0])
@@ -35,25 +36,35 @@ class MatrixCodeBypass:
         mapping.sort(key=lambda t: t[1])
         fmap = list(map(lambda t: t[0], mapping))
 
-        return "".join(map("".join, self.transposed([matrix[val] for val in fmap])))
+        return self.join2d(self.transposed([matrix[val] for val in fmap]))
 
     def to_key_chars_matrix(self, word):
-        return self.to_chars_matrix(word, len(self.key))
-
-    @staticmethod
-    def to_chars_matrix(word, key_len, fill_x=True):
+        key_len = len(self.key)
         words_list = [word[i:i + key_len] for i in range(0, len(word), key_len)]
         last = len(words_list) - 1
         last_len = len(words_list[last])
-        if last_len != key_len and fill_x:
+        if last_len != key_len:
             words_list[last] += "X" * (key_len - last_len)
+        return list(map(lambda line: list(line), words_list))
+
+    @staticmethod
+    def to_chars_matrix(word, key_len):
+        words_list = [word[i:i + key_len] for i in range(0, len(word), key_len)]
         return list(map(lambda line: list(line), words_list))
 
     @staticmethod
     def transposed(lists):
         if not lists:
             return []
-        return list(map(lambda *row: list(row), *lists))
+        transposed = list(map(lambda row: list(map(lambda x: 'X', row)), zeros((len(lists[0]), len(lists)))))
+        for i in range(len(lists)):
+            for j in range(len(lists[i])):
+                transposed[j][i] = lists[i][j]
+        return transposed
+
+    @staticmethod
+    def join2d(lists):
+        return "".join(map("".join, lists))
 
 
 def main():
