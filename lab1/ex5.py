@@ -60,7 +60,7 @@ def main():
     encoded = "FDVDAFAAAADFAFFAFGDFVFDGXF"
     # encoded = "FVVFFFVGGGFFVVFXXDXGVVVVDFFDFA"
     # decoded = "DONTPUTITOFFTILLTOMORROW"
-    decoded = "ESLSNSOQSH1J9XX"
+    decoded = "ENPSJHRWOSZBSKK"
     cipher = ADFGVXCipher(matrix, encoder_decoder)
     print(encoded + " = " + cipher.decode(encoded))
     print(decoded + " = " + cipher.encode(decoded))

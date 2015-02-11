@@ -1,5 +1,3 @@
-from numpy.core.multiarray import zeros
-
 __author__ = 'Olexandr'
 
 
@@ -25,9 +23,6 @@ class MatrixCodeBypass:
     def decode(self, word):
         if not word or len(word) == 0:
             return ""
-        (i, j) = divmod(len(word), len(self.key))
-        m_len = i + 1 if j != 0 else i
-        matrix = self.to_chars_matrix(word, m_len)
 
         mapping = list(map(lambda char: (self.alphabet.index(char), self.key.index(char)), self.key))
         mapping.sort(key=lambda t: t[0])
@@ -36,7 +31,14 @@ class MatrixCodeBypass:
         mapping.sort(key=lambda t: t[1])
         fmap = list(map(lambda t: t[0], mapping))
 
-        return self.join2d(self.transposed([matrix[val] for val in fmap]))
+        (i, j) = divmod(len(word), len(self.key))
+        m_len = i + 1 if j != 0 else i
+        matrix = [list(word[i:i + m_len]) for i in range(0, len(word), m_len)]
+        if len(word) % len(self.key) != 0:
+            sort_m = self.fix_length([matrix[val] for val in fmap], len(self.key) - j)
+        else:
+            sort_m = [matrix[val] for val in fmap]
+        return self.join2d(self.transposed(sort_m))
 
     def to_key_chars_matrix(self, word):
         key_len = len(self.key)
@@ -48,23 +50,20 @@ class MatrixCodeBypass:
         return list(map(lambda line: list(line), words_list))
 
     @staticmethod
-    def to_chars_matrix(word, key_len):
-        words_list = [word[i:i + key_len] for i in range(0, len(word), key_len)]
-        return list(map(lambda line: list(line), words_list))
-
-    @staticmethod
     def transposed(lists):
         if not lists:
             return []
-        transposed = list(map(lambda row: list(map(lambda x: 'X', row)), zeros((len(lists[0]), len(lists)))))
-        for i in range(len(lists)):
-            for j in range(len(lists[i])):
-                transposed[j][i] = lists[i][j]
-        return transposed
+        return list(map(lambda *row: list(row), *lists))
 
     @staticmethod
     def join2d(lists):
         return "".join(map("".join, lists))
+
+    @staticmethod
+    def fix_length(matrix, diff):
+        key_len, m_len = len(matrix), len(matrix[0])
+        md = MatrixCodeBypass.join2d(matrix[key_len - diff::])
+        return matrix[0:key_len - diff] + [list(md[i:i + m_len - 1]) + ["X"] for i in range(0, len(md), m_len - 1)]
 
 
 def main():
