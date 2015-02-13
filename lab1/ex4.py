@@ -35,10 +35,22 @@ class MatrixCodeBypass:
         m_len = i + 1 if j != 0 else i
         matrix = [list(word[i:i + m_len]) for i in range(0, len(word), m_len)]
         if len(word) % len(self.key) != 0:
-            sort_m = self.fix_length([matrix[val] for val in fmap], len(self.key) - j)
+            exp_max = int(len(word) / len(self.key)) + 1
+            exp_min = int(len(word) / len(self.key))
+            letters = self.key[:len(word) % len(self.key) - 1:-1]
+            tmp_word = ''
+            for l in sorted(self.key):
+                if l in letters:
+                    count = exp_min
+                    tmp_word += word[:count] + 'X'
+                else:
+                    count = exp_max
+                    tmp_word += word[:count]
+                word = word[count:]
+            return self.decode(tmp_word)
         else:
             sort_m = [matrix[val] for val in fmap]
-        return self.join2d(self.transposed(sort_m))
+            return self.join2d(self.transposed(sort_m))
 
     def to_key_chars_matrix(self, word):
         key_len = len(self.key)
