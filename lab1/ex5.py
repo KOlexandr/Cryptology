@@ -44,23 +44,10 @@ def main():
         ['2', '8', 'C', 'U', '6', 'K']
     ]
 
-    '''key = "GARDEN"
-    matrix = [
-        ['C', 'O', '8', 'X', 'F', '4'],
-        ['M', 'K', '3', 'A', 'Z', '9'],
-        ['N', 'W', 'L', '0', 'J', 'D'],
-        ['5', 'S', 'I', 'Y', 'H', 'U'],
-        ['P', '1', 'V', 'B', '6', 'R'],
-        ['E', 'Q', '7', 'T', '2', 'G']
-    ]'''
-
     encoder_decoder = MatrixCodeBypass(key, alphabet)
 
-    # encoded = "XGGDGFAXDAFVFGDDFGXAFAVFFXXAXFDVAXGVFDXDAVGAGXAA"
     encoded = "FDVDAFAAAADFAFFAFGDFVFDGXF"
-    # encoded = "FVVFFFVGGGFFVVFXXDXGVVVVDFFDFA"
-    # decoded = "DONTPUTITOFFTILLTOMORROW"
-    decoded = "ENPSJHRWOSZBSKK"
+    decoded = "RENEDESCARTESKK"
     cipher = ADFGVXCipher(matrix, encoder_decoder)
     print(encoded + " = " + cipher.decode(encoded))
     print(decoded + " = " + cipher.encode(decoded))
