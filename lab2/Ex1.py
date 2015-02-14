@@ -1,40 +1,54 @@
+from lab1.inverse import inverse_x
+
 __author__ = 'Olexandr'
 
-c1 = '0111110010110111101000001010000011100001111100111100011010011100011111100000001110110010101110001110010010011100010011110010100110111100111011101001101101000011010011110100111100101011111100100111101100010000010110001001100101110010111110000000010101111011011100100000100001101110010001010011001010100000100000000000111111011010001110011001010101111110010011101000111000110010000010010101010010100101'
-c2 = '0110100111111111101001101110100011101101111101011101101011011001001101110000010011111010101111101110010010010111010001010010100110111110111101011101101001011110010111000101100001100100111010000111010001010101000110011000011100111101111000110001010000101000001001100001011101101110010111010111100110110110100001110001101010000011011101011000100001111000010000001000111001100001010010000001100111100000'
-c3 = '0111001111110010101101011010110111110010101110101101100011001001011000110101000011111101101100011110110011010000010000110110011110101001111101001101011100010000010011110101001000101001111100110110111001000010010101101001110101110010111001100001100101101001001001100101111101110010010010110010110011100101100100000001101010010100011101011001100001111111000001011101101001111101010011010001010111111100'
 
-def bit_to_string(bs):  # Переводить бінарний рядок у текстовий (ASCII)
-    assert len(bs) % 8 == 0
-    s = ''
-    for i in range(0, len(bs), 8):
-        s += chr(int(bs[i:i + 8], 2))
-    return s
+class AffineCipher:
+    def __init__(self, a, s, alphabet):
+        """
+        text – повідомлення;
+        crypto – зашифроване повідомлення
+        :param a, :param s: keys for monogram affine cipher
+        :param alphabet: alphabet
+        """
+        self.a = a
+        self.s = s
+        self.a_1 = inverse_x(a, len(alphabet))
+        self.s_1 = (-self.a_1 * s) % len(alphabet)
+        self.alphabet = alphabet.lower()
+
+    def encode(self, word):
+        """
+        :param word: input open message
+        :return: encrypted input message
+        """
+        new_word = []
+        for w in word.lower():
+            new_letter_idx = (self.a * self.alphabet.index(w) + self.s) % len(self.alphabet)
+            new_word.append(self.alphabet[new_letter_idx])
+        return "".join(new_word)
+
+    def decode(self, word):
+        """
+        :param word: input encrypted message
+        :return: decrypted input message
+        """
+        new_word = []
+        for w in word.lower():
+            new_letter_idx = (self.a_1 * self.alphabet.index(w) + self.s_1) % len(self.alphabet)
+            new_word.append(self.alphabet[new_letter_idx])
+        return "".join(new_word)
 
 
-def string_to_bin(s):  # Переводить текстовий рядок у бінарний (ASCII)
-    def char_to_8bit(c):  # Переводить символ у 8-бітний бінарний рядок (ASCII)
-        return bin(ord(c))[2:].zfill(8)
+def main():
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-    bs = ''
-    for i in range(len(s)):
-        bs += char_to_8bit(s[i])
-    return bs
+    encoded = "LIHXTCJQOTGWDI"
+    decoded = "CLOSEDINTERVAL"
+    affine = AffineCipher(17, 3, alphabet)
+    print(encoded + " = " + affine.decode(encoded))
+    print(decoded + " = " + affine.encode(decoded))
 
 
-def xor_bits(bs1, bs2):
-    # Побітове додавання двох текстових бінарних рядків.  # Якщо bs1<bs2, то залишок bs2 ігнорується
-    bs = ''
-    for i in range(len(bs1)):
-        if bs1[i] == bs2[i]:
-            bs += '0'
-        else:
-            bs += '1'
-    return bs
-
-print("1-2 ->")
-print(bit_to_string(xor_bits(c1, c2)))
-print("1-3 ->")
-print(bit_to_string(xor_bits(c1, c3)))
-print("2-3 ->")
-print(bit_to_string(xor_bits(c2, c3)))
+if __name__ == '__main__':
+    main()
