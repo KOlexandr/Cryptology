@@ -83,7 +83,7 @@ def main():
     g_b = 3193533191571883174254626
     keys = find_secret_key(p, g_b, ciphertext)
     for a, key in keys:
-        print(ciphertext + " (a = " + a + ", key = " + key + ") = " + decrypt(ciphertext, key))
+        print(ciphertext + " (a = " + str(a) + ", key = " + key + ") = " + decrypt(ciphertext, key))
 
 
 if __name__ == '__main__':
