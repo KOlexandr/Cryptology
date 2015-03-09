@@ -79,11 +79,12 @@ def find_secret_key(p, g_b, ciphertext):
 
 def main():
     ciphertext = "101001101001000010110010000001000001010100000110000101101111101001011011"
+    # (a = 6082679, key = 4457164398956236671400872) = Meet at 5
     p, g = 4715958727385315387660737, 5
     g_b = 3193533191571883174254626
     keys = find_secret_key(p, g_b, ciphertext)
     for a, key in keys:
-        print(ciphertext + " (a = " + str(a) + ", key = " + key + ") = " + decrypt(ciphertext, key))
+        print(ciphertext + " (a = " + str(a) + ", key = " + str(key) + ") = " + decrypt(ciphertext, key))
 
 
 if __name__ == '__main__':
