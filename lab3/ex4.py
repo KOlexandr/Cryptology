@@ -23,8 +23,12 @@ class Rabin:
             if len(possible) == 0:
                 possible = w
             else:
-                possible = ["".join(map(lambda v: v + wi, possible)) for wi in w]
-        return possible
+                tmp = []
+                for wi in w:
+                    for pos in possible:
+                        tmp.append(pos + wi)
+                possible = tmp
+        return list(map(lambda v: "".join(v), possible))
 
     def decode_one(self, x):
         sub_words = []
